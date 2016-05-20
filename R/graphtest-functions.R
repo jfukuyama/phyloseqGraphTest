@@ -7,6 +7,10 @@
 #' @param physeq A phyloseq object.
 #' @param sampletype A string giving the column name of the sample to
 #' be tested. This should be a factor with two or more levels.
+#' @param grouping Either a string with the name of a sample data
+#' column or a factor of length equal to the number of samples in
+#' physeq. These are the groups of samples whose labels should be
+#' permuted. Default is no grouping (each group is of size 1). 
 #' @param distance A distance, see \link{phyloseq::distance} for a
 #' list of the possible methods.
 #' @param type One of "mst", "knn", "threshold". If "mst", forms the
@@ -29,12 +33,16 @@
 #' permutation p-value, the graph used for testing, and a vector with
 #' the sample types used for the test.
 #' @export
-graph_perm_test = function(physeq, sampletype,
+graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
     distance = "jaccard", type = c("mst", "knn", "threshold.value", "threshold.nedges"),
     max.dist = .4, knn = 1, nedges = nsamples(physeq), nperm = 99) {
     type = match.arg(type)
     # make the network
     d = distance(physeq, method = distance, type = "samples")
+    if(!validGrouping(sample_data(physeq), sampletype, grouping)) {
+        stop("Not a valid grouping, all values of sampletype must
+              be the same within each level of grouping")
+    }
     switch(type,
            "threshold.value" = {
                neighbors = as.matrix(d) <= max.dist
@@ -48,7 +56,7 @@ graph_perm_test = function(physeq, sampletype,
                net = graph.adjacency(neighbors, mode = "undirected", add.colnames = "name")
            },
            "knn" = {
-               neighbors = t(apply(d,1, function(x) {
+               neighbors = t(apply(as.matrix(d),1, function(x) {
                    r = rank(x)
                    nvec = ((r > 1) & (r < (knn + 2))) + 0
                }))
@@ -71,7 +79,7 @@ graph_perm_test = function(physeq, sampletype,
     # find the permutation distribution of the number of pure edges
     permvec = numeric(nperm)
     for(i in 1:nperm) {
-        sampledata[,sampletype] = sampledata[sample(nrow(sampledata)), sampletype]
+        sampledata[,sampletype] = permute(sampledata, grouping, sampletype)
         permPureEdges = apply(el, 1, function(x)
             sampledata[x[1], sampletype] == sampledata[x[2], sampletype])
         permvec[i] = sum(permPureEdges)
@@ -81,6 +89,36 @@ graph_perm_test = function(physeq, sampletype,
                 net = net, sampletype = origSampleData))
 }
 
+
+
+permute = function(sampledata, grouping, sampletype) {
+    if(length(grouping) != nrow(sampledata)) {
+        grouping = sampledata[,grouping]
+    }
+    x = as.character(sampledata[,sampletype])
+    # gives the original mapping between grouping variables and sampletype
+    labels = tapply(x, grouping, function(x) x[1])
+    # permute the labels of the groupings
+    names(labels) = sample(names(labels))
+    return(labels[as.character(grouping)])
+}
+
+validGrouping = function(sd, sampletype, grouping) {
+    if(!(sampletype %in% colnames(sd))) {
+        stop("\'sampletype\' must be a column names of the sample data")
+    }
+    if(!(grouping %in% colnames(sd)) && (length(grouping) != nrow(sd))) {
+        stop("\'grouping\' must be either a column name of the sample data
+             or a vector with number of elements equal to the number of samples")
+    }
+    sd = data.frame(sd)
+    if(length(grouping) != nrow(sd)) {
+        grouping = sd[,grouping]
+    }
+    valid = all(tapply(sd[,sampletype], grouping, FUN = function(x)
+        length(unique(x)) == 1))
+    return(valid)
+}
 
 #' Plots the graph used for testing
 #'

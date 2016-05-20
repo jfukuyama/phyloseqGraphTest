@@ -4,15 +4,21 @@
 \alias{graph_perm_test}
 \title{Performs graph-based permutation tests}
 \usage{
-graph_perm_test(physeq, sampletype, distance = "jaccard", type = c("mst",
-  "knn", "threshold.value", "threshold.nedges"), max.dist = 0.4, knn = 1,
-  nedges = nsamples(physeq), nperm = 99)
+graph_perm_test(physeq, sampletype, grouping = 1:nsamples(physeq),
+  distance = "jaccard", type = c("mst", "knn", "threshold.value",
+  "threshold.nedges"), max.dist = 0.4, knn = 1, nedges = nsamples(physeq),
+  nperm = 99)
 }
 \arguments{
 \item{physeq}{A phyloseq object.}
 
 \item{sampletype}{A string giving the column name of the sample to
 be tested. This should be a factor with two or more levels.}
+
+\item{grouping}{Either a string with the name of a sample data
+column or a factor of length equal to the number of samples in
+physeq. These are the groups of samples whose labels should be
+permuted. Default is no grouping (each group is of size 1).}
 
 \item{distance}{A distance, see \link{phyloseq::distance} for a
 list of the possible methods.}
