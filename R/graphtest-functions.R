@@ -70,9 +70,12 @@ graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
     )
     el = get.edgelist(net)
     sampledata = data.frame(sample_data(physeq))
+    elTypes = el
+    elTypes[,1] = sampledata[el[,1], sampletype]
+    elTypes[,2] = sampledata[el[,2], sampletype]
+    observedPureEdges = apply(elTypes, 1, function(x) x[1] == x[2])
+    
     # find the number of pure edges for the non-permuted data
-    observedPureEdges = apply(el, 1, function(x)
-        sampledata[x[1], sampletype] == sampledata[x[2], sampletype])
     nobserved = sum(observedPureEdges)
     origSampleData = sampledata[,sampletype]
     names(origSampleData) = rownames(sampledata)
@@ -80,8 +83,10 @@ graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
     permvec = numeric(nperm)
     for(i in 1:nperm) {
         sampledata[,sampletype] = permute(sampledata, grouping, sampletype)
-        permPureEdges = apply(el, 1, function(x)
-            sampledata[x[1], sampletype] == sampledata[x[2], sampletype])
+        elTypes = el
+        elTypes[,1] = sampledata[el[,1], sampletype]
+        elTypes[,2] = sampledata[el[,2], sampletype]
+        permPureEdges = apply(elTypes, 1, function(x) x[1] == x[2])
         permvec[i] = sum(permPureEdges)
     }
     pval = (sum(permvec >= nobserved) + 1) / (nperm + 1)
