@@ -10,7 +10,7 @@ plot_test_network(graphtest)
 \item{graphtest}{The output from graph_perm_test.}
 }
 \value{
-A ggplot object.
+A ggplot object created by ggnetwork.
 }
 \description{
 When using the graph_perm_test function, a graph is created. This

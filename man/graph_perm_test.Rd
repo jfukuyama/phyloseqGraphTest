@@ -7,7 +7,7 @@
 graph_perm_test(physeq, sampletype, grouping = 1:nsamples(physeq),
   distance = "jaccard", type = c("mst", "knn", "threshold.value",
   "threshold.nedges"), max.dist = 0.4, knn = 1, nedges = nsamples(physeq),
-  nperm = 99)
+  keep.isolates = TRUE, nperm = 99)
 }
 \arguments{
 \item{physeq}{A phyloseq object.}
@@ -33,6 +33,9 @@ pair of samples within a certain distance.}
 two samples such that we put an edge between them.}
 
 \item{knn}{For type "knn", the number of nearest neighbors.}
+
+\item{keep.isolates}{In the returned network, keep the unconnected
+points?}
 
 \item{nperm}{The number of permutations to perform.}
 }

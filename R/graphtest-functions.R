@@ -21,12 +21,16 @@
 #' @param max.dist For type "threshold", the maximum distance between
 #' two samples such that we put an edge between them.
 #' @param knn For type "knn", the number of nearest neighbors.
+#' @param keep.isolates In the returned network, keep the unconnected
+#' points?
 #' @param nperm The number of permutations to perform.
 #'
 #'
-#' @importFrom igraph graph.adjacency minimum.spanning.tree get.edgelist
+#' @importFrom igraph graph.adjacency minimum.spanning.tree
+#' get.edgelist V<- E<- V E subgraph.edges
 #' @import phyloseq
 #' @import ggplot2
+#' @import ggnetwork
 #' 
 #' @return A list with the observed number of pure edges, the vector
 #' containing the number of pure edges in each permutation, the
@@ -35,7 +39,7 @@
 #' @export
 graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
     distance = "jaccard", type = c("mst", "knn", "threshold.value", "threshold.nedges"),
-    max.dist = .4, knn = 1, nedges = nsamples(physeq), nperm = 99) {
+    max.dist = .4, knn = 1, nedges = nsamples(physeq), keep.isolates = TRUE, nperm = 99) {
     type = match.arg(type)
     # make the network
     d = distance(physeq, method = distance, type = "samples")
@@ -60,20 +64,26 @@ graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
                    r = rank(x)
                    nvec = ((r > 1) & (r < (knn + 2))) + 0
                }))
-               net = graph.adjacency(neighbors, mode = "directed", add.colnames = "name")
+               neighbors = neighbors + t(neighbors)
+               net = graph.adjacency(neighbors, mode = "undirected",
+                   add.colnames = "name", weighted = TRUE)
            },
            "mst" = {
                gr = graph.adjacency(as.matrix(d), mode = "undirected", weighted = TRUE,
                    add.colnames = "name")
                net = minimum.spanning.tree(gr, algorithm = "prim")
            }           
-    )
+           )
     el = get.edgelist(net)
     sampledata = data.frame(sample_data(physeq))
     elTypes = el
     elTypes[,1] = sampledata[el[,1], sampletype]
     elTypes[,2] = sampledata[el[,2], sampletype]
     observedPureEdges = apply(elTypes, 1, function(x) x[1] == x[2])
+    edgeType = sapply(observedPureEdges, function(x) if(x) "pure" else "mixed")
+    # set these attributes for plotting later
+    V(net)$sampletype = sampledata[,sampletype]
+    E(net)$edgetype = edgeType
     
     # find the number of pure edges for the non-permuted data
     nobserved = sum(observedPureEdges)
@@ -90,8 +100,12 @@ graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
         permvec[i] = sum(permPureEdges)
     }
     pval = (sum(permvec >= nobserved) + 1) / (nperm + 1)
+    if(!keep.isolates) {
+        degrees = igraph::degree(net)
+        net = igraph::subgraph.edges(net, which(degrees > 0))
+    }
     return(list(observed = nobserved, perm = permvec, pval = pval,
-                net = net, sampletype = origSampleData))
+                net = net, sampletype = origSampleData, type = type))
 }
 
 
@@ -132,38 +146,20 @@ validGrouping = function(sd, sampletype, grouping) {
 #' sample type and edges marked as pure or mixed.
 #'
 #' @param graphtest The output from graph_perm_test.
-#' @return A ggplot object.
+#' @return A ggplot object created by ggnetwork.
 #'
-#' @importFrom igraph V layout.fruchterman.reingold get.edgelist
 #' @export
 plot_test_network = function(graphtest) {
-    net = graphtest$net
-    sampletype = graphtest$sampletype
-    nodes = layout.fruchterman.reingold(net)
-    rownames(nodes) = V(net)$name
-    nodes = data.frame(nodes)
-    names(nodes) = c("x", "y")
-    nodes$sampletype = sampletype
-    el = get.edgelist(net)
-    edgeDF = t(apply(el, 1, function(x) {
-        unlist(c(nodes[x[1],1:2], nodes[x[2],1:2]))
-    }))
-
-    pure = apply(el, 1, function(x) {
-        if(sampletype[x[1]] == sampletype[x[2]])
-            return("pure")
-        return("mixed")
-    })
-    edgeDF = data.frame(edgeDF, edgetype = pure)
-    names(edgeDF)[1:4] = c("x", "y", "xend", "yend")
-    p = ggplot(edgeDF) +
-        geom_segment(aes(x = x, y = y, xend = xend, yend = yend, linetype = edgetype)) + 
-        geom_point(aes(x = x, y = y, color = sampletype), data = nodes) +
-        scale_linetype_manual(values = c(3,1))
-    p = p + theme(axis.text.y = element_blank(), axis.text.x = element_blank(),
-        axis.ticks = element_blank(), axis.title.x = element_blank(),
-        axis.title.y = element_blank())
-    print(p)
+    if(graphtest$type == "mst")
+        layoutMethod = "kamadakawai"
+    else
+        layoutMethod = "fruchtermanreingold"
+    p2 = ggplot(graphtest$net,
+        aes(x = x, y = y, xend = xend, yend = yend), layout = layoutMethod) +
+        geom_edges(aes(linetype = edgetype)) +
+        geom_nodes(aes(color = sampletype)) +
+        scale_linetype_manual(values = c(3,1)) + theme_blank()
+    print(p2)
 }
 
 
