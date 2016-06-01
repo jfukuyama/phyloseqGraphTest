@@ -154,12 +154,11 @@ plot_test_network = function(graphtest) {
         layoutMethod = "kamadakawai"
     else
         layoutMethod = "fruchtermanreingold"
-    p2 = ggplot(graphtest$net,
-        aes(x = x, y = y, xend = xend, yend = yend), layout = layoutMethod) +
-        geom_edges(aes(linetype = edgetype)) +
-        geom_nodes(aes(color = sampletype)) +
-        scale_linetype_manual(values = c(3,1)) + theme_blank()
-    print(p2)
+    ggplot(graphtest$net,
+      aes(x = x, y = y, xend = xend, yend = yend), layout = layoutMethod) +
+      geom_edges(aes(linetype = edgetype)) +
+      geom_nodes(aes(color = sampletype)) +
+      scale_linetype_manual(values = c(3,1)) + theme_blank()
 }
 
 
@@ -175,9 +174,8 @@ plot_test_network = function(graphtest) {
 plot_permutations = function(graphtest) {
     p = qplot(graphtest$perm, geom = "histogram")
     ymax = ggplot_build(p)$panel$ranges[[1]]$y.range[2]
-    p = p + geom_segment(aes(x = graphtest$observed, y = 0,
+    p + geom_segment(aes(x = graphtest$observed, y = 0,
                          xend = graphtest$observed, yend = ymax / 10), color = "red") +
         geom_point(aes(x = graphtest$observed, y = ymax / 10), color = "red") +
         xlab("Number of pure edges")                         
-    print(p)
 }
