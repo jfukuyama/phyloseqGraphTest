@@ -154,12 +154,11 @@ plot_test_network = function(graphtest) {
         layoutMethod = "kamadakawai"
     else
         layoutMethod = "fruchtermanreingold"
-    p2 = ggplot(graphtest$net,
-        aes(x = x, y = y, xend = xend, yend = yend), layout = layoutMethod) +
-        geom_edges(aes(linetype = edgetype)) +
-        geom_nodes(aes(color = sampletype)) +
-        scale_linetype_manual(values = c(3,1)) + theme_blank()
-    print(p2)
+    ggplot(graphtest$net,
+      aes(x = x, y = y, xend = xend, yend = yend), layout = layoutMethod) +
+      geom_edges(aes(linetype = edgetype)) +
+      geom_nodes(aes(color = sampletype)) +
+      scale_linetype_manual(values = c(3,1)) + theme_blank()
 }
 
 
