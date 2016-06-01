@@ -174,9 +174,8 @@ plot_test_network = function(graphtest) {
 plot_permutations = function(graphtest) {
     p = qplot(graphtest$perm, geom = "histogram")
     ymax = ggplot_build(p)$panel$ranges[[1]]$y.range[2]
-    p = p + geom_segment(aes(x = graphtest$observed, y = 0,
+    p + geom_segment(aes(x = graphtest$observed, y = 0,
                          xend = graphtest$observed, yend = ymax / 10), color = "red") +
         geom_point(aes(x = graphtest$observed, y = ymax / 10), color = "red") +
         xlab("Number of pure edges")                         
-    print(p)
 }
