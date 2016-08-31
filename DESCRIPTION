@@ -1,14 +1,15 @@
 Package: phyloseqGraphTest
-Title: Graph-based permutation tests for microbiome data
+Title: Graph-Based Permutation Tests for Microbiome Data
 Version: 0.1
-Authors@R: "Julia Fukuyama <julia.fukuyama@gmail.com> [aut, cre]"
+Author: Julia Fukuyama [aut, cre]
+Maintainer: Julia Fukuyama <julia.fukuyama@gmail.com>
 Description: Graph-based permutation tests and visualization for microbiome data. 
 Imports:
-    ggplot2,
-    igraph,
-    phyloseq
+    ggnetwork,
+    igraph
 Depends:
-    R (>= 3.1.0)
+    R (>= 3.1.0),
+    phyloseq
 License: CC0
 LazyData: true
 VignetteBuilder: knitr

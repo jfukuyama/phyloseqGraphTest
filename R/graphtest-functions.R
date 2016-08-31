@@ -27,7 +27,7 @@
 #'
 #'
 #' @importFrom igraph graph.adjacency minimum.spanning.tree
-#' get.edgelist V<- E<- V E subgraph.edges
+#' get.edgelist V<- E<- V E induced_subgraph
 #' @import phyloseq
 #' @import ggplot2
 #' @import ggnetwork
@@ -102,7 +102,7 @@ graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
     pval = (sum(permvec >= nobserved) + 1) / (nperm + 1)
     if(!keep.isolates) {
         degrees = igraph::degree(net)
-        net = igraph::subgraph.edges(net, which(degrees > 0))
+        net = igraph::induced_subgraph(net, which(degrees > 0))
     }
     return(list(observed = nobserved, perm = permvec, pval = pval,
                 net = net, sampletype = origSampleData, type = type))
