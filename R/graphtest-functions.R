@@ -82,7 +82,10 @@ graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
     observedPureEdges = apply(elTypes, 1, function(x) x[1] == x[2])
     edgeType = sapply(observedPureEdges, function(x) if(x) "pure" else "mixed")
     # set these attributes for plotting later
-    V(net)$sampletype = sampledata[,sampletype]
+    if(is.factor(sampledata[,sampletype]))
+        V(net)$sampletype = as.character(sampledata[,sampletype])
+    else
+        V(net)$sampletype = sampledata[,sampletype]
     E(net)$edgetype = edgeType
     
     # find the number of pure edges for the non-permuted data
