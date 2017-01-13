@@ -174,8 +174,8 @@ plot_test_network = function(graphtest) {
 #' @return A ggplot object.
 #'
 #' @export
-plot_permutations = function(graphtest) {
-    p = qplot(graphtest$perm, geom = "histogram")
+plot_permutations = function(graphtest, bins = 30) {
+    p = qplot(graphtest$perm, geom = "histogram", bins = bins)
     ymax = ggplot_build(p)$panel$ranges[[1]]$y.range[2]
     p + geom_segment(aes(x = graphtest$observed, y = 0,
                          xend = graphtest$observed, yend = ymax / 10), color = "red") +
