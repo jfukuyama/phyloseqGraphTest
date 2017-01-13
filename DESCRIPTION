@@ -9,6 +9,7 @@ Imports:
     igraph
 Depends:
     R (>= 3.1.0),
+    ggplot2 (>= 2.2.1),
     phyloseq
 License: CC0
 LazyData: true
