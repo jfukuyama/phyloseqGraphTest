@@ -17,4 +17,3 @@ When using the graph_perm_test function, a graph is created. This
 function will plot the graph used for testing with nodes colored by
 sample type and edges marked as pure or mixed.
 }
-

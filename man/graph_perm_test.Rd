@@ -48,4 +48,3 @@ the sample types used for the test.
 \description{
 Performs graph-based tests for one-way designs.
 }
-
