@@ -1,0 +1,5 @@
+^cran-comments\.md$
+^\.Rhistory$
+^readme\.md$
+^\.httr-oauth$
+^\.git$
