@@ -34,6 +34,8 @@ two samples such that we put an edge between them.}
 
 \item{knn}{For type "knn", the number of nearest neighbors.}
 
+\item{nedges}{If using "threshold.nedges", the number of edges to use.}
+
 \item{keep.isolates}{In the returned network, keep the unconnected
 points?}
 

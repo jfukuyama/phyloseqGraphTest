@@ -24,6 +24,7 @@
 #' @param keep.isolates In the returned network, keep the unconnected
 #' points?
 #' @param nperm The number of permutations to perform.
+#' @param nedges If using "threshold.nedges", the number of edges to use.
 #'
 #'
 #' @importFrom igraph graph.adjacency minimum.spanning.tree
