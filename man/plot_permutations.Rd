@@ -4,10 +4,12 @@
 \alias{plot_permutations}
 \title{Plots the permutation distribution}
 \usage{
-plot_permutations(graphtest)
+plot_permutations(graphtest, bins = 30)
 }
 \arguments{
 \item{graphtest}{The output from graph_perm_test.}
+
+\item{bins}{The number of bins to use for the histogram.}
 }
 \value{
 A ggplot object.
@@ -16,4 +18,3 @@ A ggplot object.
 Plots a histogram of the permutation distribution of the number of
 pure edges and a mark showing the observed number of pure edges.
 }
-

@@ -171,6 +171,7 @@ plot_test_network = function(graphtest) {
 #' pure edges and a mark showing the observed number of pure edges. 
 #'
 #' @param graphtest The output from graph_perm_test.
+#' @param bins The number of bins to use for the histogram.
 #' @return A ggplot object.
 #'
 #' @export
