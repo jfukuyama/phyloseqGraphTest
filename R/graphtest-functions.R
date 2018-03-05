@@ -11,7 +11,7 @@
 #' column or a factor of length equal to the number of samples in
 #' physeq. These are the groups of samples whose labels should be
 #' permuted. Default is no grouping (each group is of size 1). 
-#' @param distance A distance, see \link{phyloseq::distance} for a
+#' @param distance A distance, see \code{\link[phyloseq]{distance}} for a
 #' list of the possible methods.
 #' @param type One of "mst", "knn", "threshold". If "mst", forms the
 #' minimum spanning tree of the sample points. If "knn", forms a
