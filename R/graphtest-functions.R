@@ -160,8 +160,8 @@ plot_test_network = function(graphtest) {
         layoutMethod = "fruchtermanreingold"
     ggplot(graphtest$net,
       aes_string(x = "x", y = "y", xend = "xend", yend = "yend"), layout = layoutMethod) +
-      geom_edges(aes(linetype = "edgetype")) +
-      geom_nodes(aes(color = "sampletype")) +
+      geom_edges(aes_string(linetype = "edgetype")) +
+      geom_nodes(aes_string(color = "sampletype")) +
       scale_linetype_manual(values = c(3,1)) + theme_blank()
 }
 
