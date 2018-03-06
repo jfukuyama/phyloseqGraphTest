@@ -50,3 +50,8 @@ the sample types used for the test.
 \description{
 Performs graph-based tests for one-way designs.
 }
+\examples{
+library(phyloseq)
+data(enterotype)
+gt = graph_perm_test(enterotype, sampletype = "SeqTech")
+}

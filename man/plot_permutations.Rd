@@ -18,3 +18,9 @@ A ggplot object.
 Plots a histogram of the permutation distribution of the number of
 pure edges and a mark showing the observed number of pure edges.
 }
+\examples{
+library(phyloseq)
+data(enterotype)
+gt = graph_perm_test(enterotype, sampletype = "SeqTech")
+plot_permutations(gt)
+}

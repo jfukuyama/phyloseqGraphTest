@@ -37,6 +37,10 @@
 #' containing the number of pure edges in each permutation, the
 #' permutation p-value, the graph used for testing, and a vector with
 #' the sample types used for the test.
+#' @examples
+#' library(phyloseq)
+#' data(enterotype)
+#' gt = graph_perm_test(enterotype, sampletype = "SeqTech")
 #' @export
 graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
     distance = "jaccard", type = c("mst", "knn", "threshold.value", "threshold.nedges"),
@@ -151,7 +155,11 @@ validGrouping = function(sd, sampletype, grouping) {
 #'
 #' @param graphtest The output from graph_perm_test.
 #' @return A ggplot object created by ggnetwork.
-#'
+#' @examples
+#' library(phyloseq)
+#' data(enterotype)
+#' gt = graph_perm_test(enterotype, sampletype = "SeqTech")
+#' plot_test_network(gt)
 #' @export
 plot_test_network = function(graphtest) {
     if(graphtest$type == "mst")
@@ -174,7 +182,11 @@ plot_test_network = function(graphtest) {
 #' @param graphtest The output from graph_perm_test.
 #' @param bins The number of bins to use for the histogram.
 #' @return A ggplot object.
-#'
+#' @examples
+#' library(phyloseq)
+#' data(enterotype)
+#' gt = graph_perm_test(enterotype, sampletype = "SeqTech")
+#' plot_permutations(gt)
 #' @export
 plot_permutations = function(graphtest, bins = 30) {
     p = qplot(graphtest$perm, geom = "histogram", bins = bins)
