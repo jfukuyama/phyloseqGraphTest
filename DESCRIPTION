@@ -9,7 +9,7 @@ Imports:
     igraph (>= 1.1.2),
     intergraph (>= 2.0.2)
 Depends:
-    R (>= 3.4.3),
+    R (>= 3.4.0),
     ggplot2 (>= 2.2.1),
     phyloseq (>= 1.20.0)
 License: CC0
