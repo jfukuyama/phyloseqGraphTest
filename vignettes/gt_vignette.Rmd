@@ -1,0 +1,205 @@
+---
+title: "Graph Testing Vignette"
+author: "Julia Fukuyama"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    theme: lumen
+    keep_md: true
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Graph Testing Vignette}
+  \usepackage[utf8]{inputenc}
+---
+
+
+```{r, echo = FALSE}
+library(knitr)
+opts_chunk$set(fig.width = 6, fig.height = 4)
+```
+## Overview
+
+Suppose we have collected measurements about bacterial abundances from
+a number of samples, and those samples fall into one of several
+groups. We want to know if there is a statistically significant
+difference between the groups, that is, whether it looks like
+the microbiome samples from the different groups look like they could
+all have come from all come from the same distribution.
+
+One good non-parametric family of tests for this problem is based on
+the Friedman-Rafsky[^1] test. The idea is to compute distances between
+the samples, create a graph based on those distances, and use the
+number of edges between samples of the same type (the number of "pure
+edges") as a test statistic. We can then compute a $p$-value by
+comparing the observed test statistic to the distribution of the test
+statistic under the permutation distribution. 
+
+[^1]: Friedman, J.H. and Rafsky, L.C. "Multivariate generalizations of
+the Wald-Wolfowitz and Smirnov two-sample tests." The Annals of
+Statistics (1979):697-717.
+
+From the description above, we see that we have some choices to
+make. We need to define a distance between the samples and choose a
+method for creating a graph from those distances. These choices are
+responsible for most of the arguments to `graph_perm_test`, the
+primary function in this package.
+
+## Specifying a distance
+
+The `distance` argument in `graph_perm_test` allows you to specify a
+distance. This can be any distance implemented in `phyloseq`, and it
+should be taken from the following list:
+```{r}
+library(phyloseq)
+unlist(distanceMethodList)
+```
+You can see the help page on
+[distances](https://joey711.github.io/phyloseq/distance.html) for more
+information. The distance should be chosen carefully and should
+reflect the type of differences between samples you are interested in.
+
+## Specifying a type of graph
+
+`graph_perm_test` allows you to specify one of four options for a type
+of graph: a minimum spanning tree, a $k$-nearest neighbors graph, and
+two types of thresholded graphs. These are passed to the `type`
+argument.
+
+- `type = "mst"` creates a
+  [minimum spanning tree](https://en.wikipedia.org/wiki/Minimum_spanning_tree). The
+  minimum spanning tree places edges between the samples so that all
+  of the samples are connected and the sum of the distances between
+  samples connected by an edge is minimized.
+- `type = "knn"` creates a $k$-nearest neighbors graph. For each
+  sample, we place an edge between it and its $k$ nearest
+  neighbors. This of course requires you to specify $k$ with the
+  argument `knn`. A small number, on the order of 1 to 3 is likely a
+  good choice.
+- `type = "threshold.distance"` creates a distance threshold graph,
+  and requires you to specify `max.dist`. The graph will be created by
+  placing an edge between any pair of points where the distance
+  between them is less than `max.dist`.
+- `type = "threshold.nedges"` creates a distance threshold graph, and
+  requires you to specify `nedges`. The graph will be created by
+  computing distances between every pair of samples, and placing an
+  edge between the `nedges` pairs of samples with the smallest
+  distances between them.
+  
+Note that the `knn` argument is only used with `type = "knn"`, the
+  `max.dist` argument is only used if `type = "threshold.distance"`,
+  and the `nedges` argument is only used if `type =
+  "threshold.nedges"`. `type = "mst"` requires no additional
+  arguments.
+
+In some
+[simulations](https://jfukuyama.github.io/software/graph_testing_poster.pdf)
+we saw that the minimum spanning tree and k-nearest neighbors had the
+most power. The minimum spanning tree is the simplest choice since it
+doesn’t require specifying any further parameters, but if you have
+reason to believe that other types of graphs would be more appropriate
+in your application they are also available. The $k$-nearest neighbors
+graph might be desirable because it gives an interpretable test
+statistic: the number of nearest neighbors that are of the same type.
+
+## Running a test
+
+Suppose that we have collected the data in the `enterotype` dataset,
+which is available in the phyloseq package as a `phyloseq` object. We
+can load the data and look at it with the following commands:
+
+```{r}
+library(ggplot2)
+# not necessary, but I like the white background with ggplot
+theme_set(theme_bw())
+library(phyloseqGraphTest)
+data(enterotype)
+enterotype
+```
+
+Suppose we want to test for differences between sequencing platforms
+(the `SeqTech` column in the sample data). We have also decided we
+want to use the Jaccard dissimilarity and a $k$-nearest neighbors
+graph with $k$ = 1 to perform our test. Then we would use the
+following commands to run the test and view the output:
+```{r}
+gt = graph_perm_test(enterotype,
+                     sampletype = "SeqTech",
+                     distance = "jaccard",
+                     type = "knn",
+                     knn = 1)
+gt
+```
+We see that the difference between sequencenig platforms is
+statistically significant, with a $p$-value of .002. The effect is
+also quite substantial: we see from the observed test statistic that
+out of the 221 total edges in the 1-nearest neighbors graph, 197 of
+them connect samples of the same type. 
+
+
+## Detailed output from the test
+
+The output from `graph_perm_test` is a `psgraphtest` object, which is
+a list containing information about the test. The elements of the list
+are:
+
+- `observed`: The observed test statistic, the number of pure edges. 
+
+- `perm`: A vector containing the value of the test statistic (the
+  number of pure edges) in each of the permuted datasets.
+  
+- `pval`: The p-value for the permutation test. This is the fraction
+  of times the number of pure edges in the permuted dataset exceeded
+  the number of pure edges in the observed dataset.
+  
+- `net`: The graph used for testing.
+  
+- `sampletype`: A vector containing the group label for each sample.
+	
+- `type`: The type of graph used.
+
+These can be inspected by hand, but the package also contains some
+functions for plotting the results.
+
+
+## Plotting the results of the test
+
+The function `plot_test_network` plots the graph we created on the
+samples, the sample identities, and the edge types (pure or mixed,
+i.e. edges between samples of the same type or edges between samples
+of different types). Here we see that the nearest neighbor graph
+connects largely samples of the same type. 
+```{r}
+plot_test_network(gt)
+```
+
+The function `plot_permutations` will plot a histogram of the number
+of pure edges in each of the permuted datasets along with the number
+of pure edges in the observed dataset. For this dataset, we see that
+the number of pure edges in the observed dataset is well outside of
+the permutation distribution.
+```{r}
+plot_permutations(gt)
+```
+
+
+## Additional arguments
+
+There are a couple of other arguments to the `graph_perm_test`
+function. `nperm` is the number of permutations to use for the
+test. The default is 499, and it can be increased or decreased
+depending on how much computational time you have and how closely you
+want to approximate the full permutation distribution.
+
+You can also specify a stratifying variable using the `grouping`
+argument. This is necessary in repeated measures designs. Suppose for
+instance that we have mice in two different litters, and we would like
+to test for equality of the distributions from the two litters. If we
+have more than one sample taken from each of the mice, permuting the
+litter label over all the samples independently will not give a valid
+test because of the dependence between samples taken from the same
+mouse. We can fix this by considering the mice the independent units
+and permuting the litter label over mouse instead of over sample to
+obtain a valid test. 
