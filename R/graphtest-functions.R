@@ -44,7 +44,7 @@
 #' @export
 graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
     distance = "jaccard", type = c("mst", "knn", "threshold.value", "threshold.nedges"),
-    max.dist = .4, knn = 1, nedges = nsamples(physeq), keep.isolates = TRUE, nperm = 99) {
+    max.dist = .4, knn = 1, nedges = nsamples(physeq), keep.isolates = TRUE, nperm = 499) {
     type = match.arg(type)
     # make the network
     d = distance(physeq, method = distance, type = "samples")
