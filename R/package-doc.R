@@ -1,0 +1,17 @@
+#' phyloseqGraphTest: Non-parametric graph-based testing for
+#' microbiome data.
+#'
+#' This package lets you test for differences between groups of
+#' samples with a graph-based permutation test.
+#'
+#' The main function in the package is \code{\link{graph_perm_test}},
+#' which takes a \code{\link[phyloseq]{phyloseq}} object. 
+#'
+#' The graph used in the test can be visualized using
+#' \code{\link{plot_test_network}}. The permutation distribution and
+#' the test statistic can be visualized with
+#' \code{\link{plot_permutations}}.
+#'
+#' @docType package
+#' @name phyloseqGraphTest-package
+NULL
