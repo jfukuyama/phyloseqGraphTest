@@ -10,7 +10,8 @@
 #' @param grouping Either a string with the name of a sample data
 #' column or a factor of length equal to the number of samples in
 #' physeq. These are the groups of samples whose labels should be
-#' permuted. Default is no grouping (each group is of size 1). 
+#' permuted and are used for repeated measures designs. Default is no
+#' grouping (each group is of size 1).
 #' @param distance A distance, see \code{\link[phyloseq]{distance}} for a
 #' list of the possible methods.
 #' @param type One of "mst", "knn", "threshold". If "mst", forms the
