@@ -19,3 +19,5 @@ Then the p-value is stored in `gt$pval`, and you can plot the network constructe
 plot_test_network(gt)
 plot_permutations(gt)
 ```
+
+[![Travis-CI Build Status](https://travis-ci.org/jfukuyama/phyloseqGraphTest.svg?branch=master)](https://travis-ci.org/jfukuyama/phyloseqGraphTest)

@@ -3,3 +3,4 @@
 ^readme\.md$
 ^\.httr-oauth$
 ^\.git$
+^\.travis\.yml$
