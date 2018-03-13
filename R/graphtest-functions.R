@@ -112,11 +112,24 @@ graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
         degrees = igraph::degree(net)
         net = igraph::induced_subgraph(net, which(degrees > 0))
     }
-    return(list(observed = nobserved, perm = permvec, pval = pval,
-                net = net, sampletype = origSampleData, type = type))
+    out = list(observed = nobserved, perm = permvec, pval = pval,
+               net = net, sampletype = origSampleData, type = type)
+    class(out) = "psgraphtest"
+    return(out)
 }
 
-
+#' Print psgraphtest objects
+#' @param x \code{psgraphtest} object.
+#' @param ... Not used
+#' @method print psgraphtest
+#' @export
+print.psgraphtest <- function(x, ...) {
+    cat("Output from graph_perm_test\n")
+    cat("---------------------------\n")
+    cat(paste("Observed test statistic: ", x$observed, " pure edges", "\n", sep = ""))
+    cat(paste(nrow(get.edgelist(x$net)), " total edges in the graph", "\n", sep = ""))
+    cat(paste("Permutation p-value: ", x$pval, "\n", sep = ""))
+}
 
 permute = function(sampledata, grouping, sampletype) {
     if(length(grouping) != nrow(sampledata)) {
