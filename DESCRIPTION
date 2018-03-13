@@ -15,6 +15,6 @@ Depends:
 License: CC0
 LazyData: true
 Suggests: knitr
-VignetteBuilder: knitr
+VignetteBuilder: knitr, rmarkdown
 biocViews:
 RoxygenNote: 6.0.1
