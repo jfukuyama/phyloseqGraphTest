@@ -41,7 +41,8 @@
 #' @examples
 #' library(phyloseq)
 #' data(enterotype)
-#' gt = graph_perm_test(enterotype, sampletype = "SeqTech")
+#' gt = graph_perm_test(enterotype, sampletype = "SeqTech", type = "mst")
+#' gt
 #' @export
 graph_perm_test = function(physeq, sampletype, grouping = 1:nsamples(physeq),
     distance = "jaccard", type = c("mst", "knn", "threshold.value", "threshold.nedges"),
