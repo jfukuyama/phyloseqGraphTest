@@ -133,6 +133,16 @@ print.psgraphtest <- function(x, ...) {
     cat(paste("Permutation p-value: ", x$pval, "\n", sep = ""))
 }
 
+#' Permute labels
+#'
+#' Permutes sample labels, respecting repeated measures.
+#'
+#' @param sampledata Data frame describing the samples.
+#' @param grouping Grouping for repeated measures.
+#' @param sampletype The sampletype used for testing (a column of sampledata).
+#' @return A permuted set of labels where the permutations are done
+#'     over the levels of grouping.
+#' @keywords internal
 permute = function(sampledata, grouping, sampletype) {
     if(length(grouping) != nrow(sampledata)) {
         grouping = sampledata[,grouping]
@@ -145,6 +155,17 @@ permute = function(sampledata, grouping, sampletype) {
     return(labels[as.character(grouping)])
 }
 
+#' Check for valid grouping
+#'
+#' Grouping should describe a repeated measures design, so this
+#' function tests whether all of the levels of grouping have the same
+#' value of sampletype.
+#'
+#' @param sd Data frame describing the samples.
+#' @param sampletype The sampletype used for testing.
+#' @param grouping Grouping for repeated measures.
+#' @return TRUE or FALSE for valid or invalid grouping.
+#' @keywords internal
 validGrouping = function(sd, sampletype, grouping) {
     if(!(sampletype %in% colnames(sd))) {
         stop("\'sampletype\' must be a column names of the sample data")
