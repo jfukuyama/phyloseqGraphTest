@@ -5,7 +5,11 @@ Author: Julia Fukuyama [aut, cre]
 Maintainer: Julia Fukuyama <julia.fukuyama@gmail.com>
 Description: Provides functions for graph-based multiple-sample
     testing and visualization of microbiome data, in particular data
-    stored in 'phyloseq' objects.
+    stored in 'phyloseq' objects. The tests are based on those
+    described in Friedman and Rafsky (1979)
+    <http://www.jstor.org/stable/2958919>, and the tests are described
+    in more detail in Callahan et al. (2016)
+    <doi:10.12688/f1000research.8986.1>.
 Imports:
     ggnetwork (>= 0.5.1),
     igraph (>= 1.1.2),
