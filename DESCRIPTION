@@ -1,6 +1,6 @@
 Package: phyloseqGraphTest
 Title: Graph-Based Permutation Tests for Microbiome Data
-Version: 0.0.1
+Version: 0.0.2
 Author: Julia Fukuyama [aut, cre]
 Maintainer: Julia Fukuyama <julia.fukuyama@gmail.com>
 Description: Provides functions for graph-based multiple-sample

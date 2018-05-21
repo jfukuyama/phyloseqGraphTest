@@ -217,6 +217,7 @@ plot_test_network = function(graphtest) {
 #'
 #' @param graphtest The output from graph_perm_test.
 #' @param bins The number of bins to use for the histogram.
+#' @importFrom utils packageVersion
 #' @return A ggplot object.
 #' @examples
 #' library(phyloseq)
@@ -226,7 +227,11 @@ plot_test_network = function(graphtest) {
 #' @export
 plot_permutations = function(graphtest, bins = 30) {
     p = qplot(graphtest$perm, geom = "histogram", bins = bins)
-    ymax = ggplot_build(p)$layout$panel_ranges[[1]][["y.range"]][2]
+    if(packageVersion("ggplot2") >= "2.2.1.9000") {
+        ymax = max(ggplot_build(p)$layout$panel_scales_y[[1]]$get_limits())
+    } else {
+        ymax = ggplot_build(p)$layout$panel_ranges[[1]][["y.range"]][2]
+    }
     p + geom_segment(aes(x = graphtest$observed, y = 0,
                          xend = graphtest$observed, yend = ymax / 10), color = "red") +
         geom_point(aes(x = graphtest$observed, y = ymax / 10), color = "red") +
