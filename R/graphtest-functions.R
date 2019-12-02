@@ -170,7 +170,7 @@ validGrouping = function(sd, sampletype, grouping) {
     if(!(sampletype %in% colnames(sd))) {
         stop("\'sampletype\' must be a column names of the sample data")
     }
-    if(!(grouping %in% colnames(sd)) && (length(grouping) != nrow(sd))) {
+    if(!(all(grouping %in% colnames(sd))) && (length(grouping) != nrow(sd))) {
         stop("\'grouping\' must be either a column name of the sample data
              or a vector with number of elements equal to the number of samples")
     }
