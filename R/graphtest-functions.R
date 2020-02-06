@@ -199,11 +199,11 @@ validGrouping = function(sd, sampletype, grouping) {
 #' @export
 plot_test_network = function(graphtest) {
     if(graphtest$type == "mst")
-        layoutMethod = igraph::with_kk()
+        layout = igraph::layout_(graphtest$net, igraph::with_kk())
     else
-        layoutMethod = igraph::with_fr()
+        layout = igraph::layout_(graphtest$net, igraph::with_fr())
     ggplot(graphtest$net,
-      aes_string(x = "x", y = "y", xend = "xend", yend = "yend"), layout = layoutMethod) +
+      aes_string(x = "x", y = "y", xend = "xend", yend = "yend"), layout = layout) +
       geom_edges(aes_string(linetype = "edgetype")) +
       geom_nodes(aes_string(color = "sampletype")) +
       scale_linetype_manual(values = c(3,1)) + theme_blank()
