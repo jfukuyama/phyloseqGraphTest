@@ -199,9 +199,9 @@ validGrouping = function(sd, sampletype, grouping) {
 #' @export
 plot_test_network = function(graphtest) {
     if(graphtest$type == "mst")
-        layoutMethod = "kamadakawai"
+        layoutMethod = igraph::with_kk()
     else
-        layoutMethod = "fruchtermanreingold"
+        layoutMethod = igraph::with_fr()
     ggplot(graphtest$net,
       aes_string(x = "x", y = "y", xend = "xend", yend = "yend"), layout = layoutMethod) +
       geom_edges(aes_string(linetype = "edgetype")) +
