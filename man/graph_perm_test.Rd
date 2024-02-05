@@ -4,10 +4,18 @@
 \alias{graph_perm_test}
 \title{Performs graph-based permutation tests}
 \usage{
-graph_perm_test(physeq, sampletype, grouping = 1:nsamples(physeq),
-  distance = "jaccard", type = c("mst", "knn", "threshold.value",
-  "threshold.nedges"), max.dist = 0.4, knn = 1, nedges = nsamples(physeq),
-  keep.isolates = TRUE, nperm = 499)
+graph_perm_test(
+  physeq,
+  sampletype,
+  grouping = 1:nsamples(physeq),
+  distance = "jaccard",
+  type = c("mst", "knn", "threshold.value", "threshold.nedges"),
+  max.dist = 0.4,
+  knn = 1,
+  nedges = nsamples(physeq),
+  keep.isolates = TRUE,
+  nperm = 499
+)
 }
 \arguments{
 \item{physeq}{A phyloseq object.}

@@ -1,6 +1,6 @@
 Package: phyloseqGraphTest
 Title: Graph-Based Permutation Tests for Microbiome Data
-Version: 0.1.0
+Version: 0.1.1
 Author: Julia Fukuyama [aut, cre]
 Maintainer: Julia Fukuyama <julia.fukuyama@gmail.com>
 Description: Provides functions for graph-based multiple-sample
@@ -12,8 +12,7 @@ Description: Provides functions for graph-based multiple-sample
     <doi:10.12688/f1000research.8986.1>.
 Imports:
     ggnetwork (>= 0.5.1),
-    igraph (>= 1.1.2),
-    intergraph (>= 2.0.2)
+    igraph (>= 1.1.2)
 Depends:
     R (>= 3.5.0),
     ggplot2 (>= 2.2.1),
@@ -24,4 +23,4 @@ Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
 URL: https://github.com/jfukuyama/phyloseqGraphTest
 biocViews:
-RoxygenNote: 6.0.1
+RoxygenNote: 7.2.3

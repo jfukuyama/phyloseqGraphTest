@@ -11,7 +11,7 @@ samples with a graph-based permutation test.
 }
 \details{
 The main function in the package is \code{\link{graph_perm_test}},
-which takes a \code{\link[phyloseq]{phyloseq}} object.
+which takes a \code{\link[phyloseq]{phyloseq}} object. 
 
 The graph used in the test can be visualized using
 \code{\link{plot_test_network}}. The permutation distribution and
